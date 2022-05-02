@@ -67,3 +67,44 @@ body {
   transform: translate(50%, -50%);
   
 }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  
+  float: left;
+  background-color: #93bbf9;
+  margin-left: 5px;
+  
+}
+
+li a {
+  display: block;
+  color: black;
+  text-align: left;
+  padding: 15px 17px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #0088a3;
+  color: #f1fffd;
+}
+
+.outer-container
+{
+      height: 100px;
+      width: 50% !important;
+      position: absolute;
+      padding: 10px;
+      top: 12%;
+      right: 55%;
+      transform: translate(54%, -50%);
+}
+
+svg {
+    font-size: 1.5rem;
+}

@@ -1,41 +1,85 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import CreateList from "./CreateList";
-import UpdateItem from "./UpdateItem";
+import { useDispatch } from "react-redux";
+import { deleteItem, updateItem } from "../redux/actions";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { TiEdit } from "react-icons/ti";
-function Tools({ tools, completeAction, removeList, updateList }) {
-  const [edit, setEdit] = useState({ id: null, value: "" });
+import { TiEdit, TiTick } from "react-icons/ti";
+import swal from "sweetalert";
+function Tools({ items }) {
+  const [name, setName] = useState(items.name);
+  const [edit, setEdit] = useState(false);
+  let dispatch = useDispatch();
 
-  const submitUpdate = (value) => {
-    updateList(edit.id, value);
-    setEdit({
-      id: null,
-      value: "",
+  const removeList = (id) => {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure that you want to delete this item?",
+      icon: "warning",
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(deleteItem(id));
+        swal("Deleted!", "Selected title has been deleted!", "success");
+      }
     });
   };
-  if (edit.id) {
-    return <UpdateItem edit={edit} onSubmit={submitUpdate} />;
-  } else {
-    return tools.map((item, index) => (
-      <div className="list-items" key={index}>
-        <p key={item.id} onClick={() => completeAction(item.id)}>
-          {item.text}
-        </p>
-
-        <div className="action-icons">
-          <RiCloseCircleLine
-            onClick={() => removeList(item.id)}
-            className="delete-icon"
+  return (
+    <div className="list-items col">
+      <div className="col">
+        {edit ? (
+          <input
+            type="text"
+            className="form-control"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
-          <TiEdit
-            onClick={() => setEdit({ id: item.id, value: item.text })}
+        ) : (
+          <p>{items.name}</p>
+        )}
+      </div>
+
+      <div className="action-icons">
+        {edit ? (
+          <TiTick
+            onClick={() => {
+              dispatch(
+                updateItem({
+                  ...items,
+                  name: name,
+                })
+              );
+              if (edit) {
+                setName(items.name);
+              }
+              setEdit(!edit);
+            }}
             className="edit-icon"
           />
-        </div>
+        ) : (
+          <TiEdit
+            onClick={() => {
+              dispatch(
+                updateItem({
+                  ...items,
+                  name: name,
+                })
+              );
+              if (edit) {
+                setName(items.name);
+              }
+              setEdit(!edit);
+            }}
+            className="edit-icon"
+          />
+        )}
+        <RiCloseCircleLine
+          onClick={() => removeList(items.id)}
+          className="delete-icon"
+        />
       </div>
-    ));
-  }
+    </div>
+  );
 }
 
 export default Tools;

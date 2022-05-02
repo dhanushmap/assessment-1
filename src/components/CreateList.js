@@ -1,41 +1,58 @@
 import React, { useState } from "react";
-const CreateList = (props) => {
+import { addItem } from "../redux/actions";
+import { useDispatch } from "react-redux";
+import swal from "sweetalert";
+const CreateList = () => {
   const [inputValue, setInputValue] = useState("");
+  let dispatch = useDispatch();
 
   const handleText = (e) => {
     setInputValue(e.target.value);
   };
 
-  const handleAddItem = (e) => {
-    e.preventDefault();
-    if (inputValue === "") return false;
-
-    props.onSubmit({
-      id: Math.floor(Math.random() * 10000),
-      text: inputValue,
-    });
-    setInputValue("");
+  const createItem = () => {
+    if (inputValue === "") {
+      swal({
+        title: "Validation",
+        text: "Title field is mandatory !",
+        icon: "warning",
+        dangerMode: true,
+      });
+    } else {
+      dispatch(
+        addItem({
+          id: Math.floor(Math.random() * 10000),
+          name: inputValue,
+        })
+      );
+      setInputValue("");
+      swal("Success!", "A new title has been created!", "success");
+    }
   };
   return (
-    <div>
-      <h5 style={{ textAlign: "left" }}>Create List</h5>
-      <form className="form-inline" onSubmit={handleAddItem}>
-        <div className="row">
-          <div className="col-sm-10">
-            <input
-              type="text"
-              placeholder="Title"
-              name="text"
-              value={inputValue}
-              onChange={handleText}
-              className="form-control"
-            />
-          </div>
-          <div className="col-sm-2">
-            <button className="btn btn-primary btn-block">Add Item</button>
-          </div>
+    <div className="todo-container container">
+      <div className="row">
+        <div className="col-sm-10">
+          <input
+            type="text"
+            placeholder="Title"
+            name="text"
+            value={inputValue}
+            onChange={handleText}
+            className="form-control"
+          />
         </div>
-      </form>
+        <div className="col-sm-2">
+          <button
+            className="btn btn-primary btn-block"
+            onClick={() => {
+              createItem();
+            }}
+          >
+            Add Item
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
